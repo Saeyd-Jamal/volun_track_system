@@ -9,12 +9,20 @@ class Specialization extends Model
 {
 
     use HasFactory;
-    
-     protected $fillable = [
+
+    protected $fillable = [
         'name',
         'is_active',
     ];
 
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    // Relations
     public function users()
     {
         return $this->hasMany(User::class);

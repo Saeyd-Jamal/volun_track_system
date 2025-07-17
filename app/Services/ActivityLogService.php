@@ -17,8 +17,8 @@ class ActivityLogService
 
         // حفظ التفاصيل في قاعدة البيانات
         ActivityLog::create([
-            'user_id' => $user_id ?? Auth::user()->id,
-            'user_name' => $user_name ?? Auth::user()->name ?? 'Guest',
+            'user_id' => $user_id ?? (Auth::user() ? Auth::user()->id : null),
+            'user_name' => $user_name ?? (Auth::user() ? Auth::user()->name : 'Guest'),
             'ip_request' => Request::ip(),
             'ip_address' => $internalIp,
             'event_type' => $eventType,
