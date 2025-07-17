@@ -24,10 +24,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'username',
-        'last_activity',
+        'role',
+        'specialization_id',
         'avatar',
-        'super_admin',
+        'last_activity',
     ];
 
     /**
@@ -66,5 +66,25 @@ class User extends Authenticatable
             return asset('storage/' . $this->avatar);
         }
         return asset('imgs/user.jpg');
+    }
+
+    public function specialization()
+    {
+        return $this->belongsTo(Specialization::class);
+    }
+
+    public function approvalHierarchies()
+    {
+        return $this->hasMany(ApprovalHierarchy::class);
+    }
+
+    public function volunteerApplications()
+    {
+        return $this->hasMany(VolunteerApplication::class, 'rejected_by');
+    }
+
+    public function approvedTrackings()
+    {
+        return $this->hasMany(ApprovalTracking::class, 'approved_by');
     }
 }

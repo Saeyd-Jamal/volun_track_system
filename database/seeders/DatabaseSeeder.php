@@ -21,10 +21,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password'  => 'admin',
-            'username'  => 'admin',
             'last_activity'  => now(),
             'avatar'  => null,
-            'super_admin'  => 1,
+            'role'  =>  'admin',
         ]);
 
         $constants = [
