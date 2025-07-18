@@ -23,7 +23,7 @@ class ApplicationRequest extends FormRequest
     {
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:volunteers,email'],
+            'email' => ['required', 'email', 'unique:volunteer_applications,email'],
             'phone' => ['nullable', 'string', 'max:20'],
             'gender' => ['required', 'in:male,female'],
             'birth_date' => ['required', 'date'],
@@ -33,12 +33,12 @@ class ApplicationRequest extends FormRequest
             'motivation' => ['nullable', 'string'],
             'skills' => ['nullable', 'array'],
             'skills.*' => ['string', 'max:100'],
+            'city' => ['required', 'string', 'max:100'],
+            'volunteer_place' => ['required', 'string', 'max:255'],
+            'specialization_id' => ['required', 'exists:specializations,id'],
             'previous_experience' => ['nullable', 'string'],
             'availability' => ['nullable', 'string'],
             'notes' => ['nullable', 'string'],
-            'city' => ['required', 'string', 'max:100'],
-            'volunteer_place' => ['nullable', 'string', 'max:255'],
-            'specialization_id' => ['required', 'exists:specializations,id'],
             'file' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:2048'],
         ];
     }

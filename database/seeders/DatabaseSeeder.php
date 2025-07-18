@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             'last_activity'  => now(),
             'avatar'  => null,
             'role'  =>  'admin',
+            'super_admin' => true,
         ]);
 
         $constants = [

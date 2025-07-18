@@ -51,7 +51,15 @@
             }
         </style>
     @endpush
-
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $key => $error)
+                    <li>{{ $key  }} . {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <form action="{{ route('application.store') }}" method="POST" class="container form-section">
         @csrf
         <div class="form-title">نموذج التسجيل للتطوع</div>
@@ -60,14 +68,14 @@
                 البريد الإلكتروني
                 <span class="required-star">*</span>
             </label>
-            <input type="email" id="email" name="email" class="form-control" required>
+            <input type="email" id="email" name="email" class="form-control" required value="{{ old('email') }}">
         </div>
         <div class="p-4 card">
             <label for="full_name" class="form-label">
                 الاسم الكامل
                 <span class="required-star">*</span>
             </label>
-            <input type="text" id="full_name" name="full_name" class="form-control" required>
+            <input type="text" id="full_name" name="full_name" class="form-control" required value="{{ old('full_name') }}">
         </div>
         <div class="p-4 card">
             <label for="gender" class="form-label">
@@ -76,20 +84,20 @@
             </label>
             <select class="form-select" id="gender" name="gender" required>
                 <option value="" selected disabled>اختر</option>
-                <option value="male">ذكر</option>
-                <option value="female">أنثى</option>
+                <option value="male" @selected(old('gender') == 'male')>ذكر</option>
+                <option value="female" @selected(old('gender') == 'female')>أنثى</option>
             </select>
         </div>
         <div class="p-4 card">
             <label for="phone" class="form-label">رقم الهاتف</label>
-            <input type="text" id="phone" name="phone" class="form-control">
+            <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone') }}">
         </div>
         <div class="p-4 card">
             <label for="birth_date" class="form-label">
                 تاريخ الميلاد
                 <span class="required-star">*</span>
             </label>
-            <input type="date" id="birth_date" name="birth_date" class="form-control" required>
+            <input type="date" id="birth_date" name="birth_date" class="form-control" required value="{{ old('birth_date') }}">
         </div>
         <div class="p-4 card">
             <label class="form-label">
@@ -99,7 +107,7 @@
             <select class="form-select" id="university" name="university" required>
                 <option value="" selected disabled>اختر</option>
                 @foreach ($universities as $university)
-                    <option value="{{ $university }}">{{ $university }}</option>
+                    <option value="{{ $university }}" @selected(old('university') == $university)>{{ $university }}</option>
                 @endforeach
             </select>
         </div>
@@ -111,31 +119,31 @@
             <select class="form-select" id="city" name="city" required>
                 <option value="" selected disabled>اختر</option>
                 @foreach ($cities as $city)
-                    <option value="{{ $city }}">{{ $city }}</option>
+                    <option value="{{ $city }}" @selected(old('city') == $city)>{{ $city }}</option>
                 @endforeach
             </select>
         </div>
         <div class="p-4 card">
-            <label for="volunteer_location" class="form-label">
+            <label for="volunteer_place" class="form-label">
                 مكان التطوع
                 <span class="required-star">*</span>
             </label>
-            <select class="form-select" id="volunteer_location" name="volunteer_location" required>
+            <select class="form-select" id="volunteer_place" name="volunteer_place" required>
                 <option value="" selected disabled>اختر</option>
                 @foreach ($volunteer_places as $volunteer_place)
-                    <option value="{{ $volunteer_place }}">{{ $volunteer_place }}</option>
+                    <option value="{{ $volunteer_place }}" @selected(old('volunteer_place') == $volunteer_place)>{{ $volunteer_place }}</option>
                 @endforeach
             </select>
         </div>
         <div class="p-4 card">
-            <label for="specialization" class="form-label">
+            <label for="specialization_id" class="form-label">
                 التخصص
                 <span class="required-star">*</span>
             </label>
-            <select class="form-select" id="specialization" name="specialization" required>
+            <select class="form-select" id="specialization_id" name="specialization_id" required>
                 <option value="" selected disabled>اختر</option>
                 @foreach ($specializations as $specialization)
-                    <option value="{{ $specialization->id }}">{{ $specialization->name }}</option>
+                    <option value="{{ $specialization->id }}" @selected(old('specialization_id') == $specialization->id)>{{ $specialization->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -144,45 +152,45 @@
                 التخصص الأكاديمي
                 <span class="required-star">*</span>
             </label>
-            <input type="text" id="major" name="major" class="form-control" required>
+            <input type="text" id="major" name="major" class="form-control" required value="{{ old('major') }}">
         </div>
         <div class="p-4 card">
             <label for="academic_year" class="form-label">
                 السنة الدراسية
                 <span class="required-star">*</span>
             </label>
-            <input type="number" min="2000" max="{{ date('Y') }}" step="1" id="academic_year" name="academic_year" class="form-control" required>
+            <input type="number" min="2000" max="{{ date('Y') }}" step="1" id="academic_year" name="academic_year" class="form-control" required value="{{ old('academic_year') }}">
         </div>
         <div class="p-4 card">
             <label for="motivation" class="form-label">
                 لماذا ترغب في التطوع؟
             </label>
-            <textarea id="motivation" name="motivation" class="form-control" rows="2"></textarea>
+            <textarea id="motivation" name="motivation" class="form-control" rows="2" value="{{ old('motivation') }}"></textarea>
         </div>
         <div class="p-4 card">
             <label class="form-label">المهارات</label>
             @foreach ($skills as $index => $skill)
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="{{ $skill }}" id="skill{{ $index }}" name="skills[]">
+                <input class="form-check-input" @checked(in_array($skill, old('skills', []))) type="checkbox" value="{{ $skill }}" id="skill{{ $index }}" name="skills[]">
                 <label class="form-check-label" for="skill{{ $index }}">{{ $skill }}</label>
             </div>
             @endforeach
         </div>
         <div class="p-4 card">
             <label for="previous_experience" class="form-label">خبرات سابقة</label>
-            <textarea id="previous_experience" name="previous_experience" class="form-control" rows="2"></textarea>
+            <textarea id="previous_experience" name="previous_experience" class="form-control" rows="2" value="{{ old('previous_experience') }}"></textarea>
         </div>
         <div class="p-4 card">
             <label for="availability" class="form-label">متى تكون متاحًا؟</label>
-            <input type="text" id="availability" name="availability" class="form-control">
+            <input type="text" id="availability" name="availability" class="form-control" value="{{ old('availability') }}">
         </div>
         <div class="p-4 card">
             <label for="notes" class="form-label">ملاحظات إضافية</label>
-            <textarea id="notes" name="notes" class="form-control" rows="2"></textarea>
+            <textarea id="notes" name="notes" class="form-control" rows="2" value="{{ old('notes') }}"></textarea>
         </div>
         <div class="p-4 card">
             <label for="file" class="form-label">السيرة الذاتية (CV)</label>
-            <input type="file" id="file" name="file" class="form-control">
+            <input type="file" id="file" name="file" class="form-control" value="{{ old('file') }}">
         </div>
         <div class="text-end">
             <button class="submit-btn" type="submit" id="submit-btn">إرسال</button>
@@ -220,10 +228,6 @@
                             }
                         },
                     });
-                });
-
-                $('.submit-btn').on('click', function() {
-                    alert('✅ تم إرسال الطلب بنجاح! سيتم مراجعة بياناتك قريبًا.');
                 });
             });
         </script>

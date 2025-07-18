@@ -32,6 +32,20 @@
             </a>
         </li>
         @endcan
+        @can('view', 'App\\Models\\Specialization')
+        <li class="menu-item {{ request()->is('specializations/*') || request()->is('specializations') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.specializations.index') }}" class="menu-link">
+                <i class="fa-solid fa-list me-2"></i>
+                <div data-i18n="users">التخصصات</div>
+            </a>
+        </li>
+        @endcan
+        <li class="menu-item {{ request()->is('reviewers/*') || request()->is('reviewers') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.reviewers.index') }}" class="menu-link">
+                <i class="fa-solid fa-list me-2"></i>
+                <div data-i18n="users">قائمة الطلبات</div>
+            </a>
+        </li>
         {{-- <li class="menu-item">
             <a href="page-2.html" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>

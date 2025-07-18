@@ -28,6 +28,7 @@ class User extends Authenticatable
         'specialization_id',
         'avatar',
         'last_activity',
+        'super_admin'
     ];
 
     /**

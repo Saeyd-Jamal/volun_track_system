@@ -10,8 +10,8 @@ class ApprovalTracking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'application_id',
-        'hierarchy_level_id',
+        'volunteer_application_id',
+        'approval_hierarchy_id',
         'action',
         'approved_by',
         'notes',

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->enum('role', ['admin', 'reviewer']);
             $table->timestamp('last_activity')->nullable();
+            $table->boolean('super_admin')->default(false);
             $table->foreignId('specialization_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

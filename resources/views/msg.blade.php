@@ -37,8 +37,15 @@
 
     <div class="confirmation-box">
         <div class="confirmation-title">نموذج التسجيل للتطوع</div>
-        <div class="confirmation-message">✅ تم إرسال ردك بنجاح!</div>
-        <div class="confirmation-sub">شكراً لتسجيلك، سيتم التواصل معك قريبًا في حال الموافقة.</div>
+        @if($msg_type == 'done')
+            <div class="confirmation-message">✅ تم إرسال ردك بنجاح!</div>
+            <div class="confirmation-sub">شكراً لتسجيلك، سيتم التواصل معك قريبًا في حال الموافقة.</div>
+        @elseif($msg_type == 'close')
+            <div class="confirmation-message">❌ تم إغلاق النموذج</div>
+            <div class="confirmation-sub">
+                يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة.
+            </div>
+        @endif
     </div>
 </x-front-layout>
 

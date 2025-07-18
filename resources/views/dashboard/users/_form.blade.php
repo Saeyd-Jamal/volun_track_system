@@ -1,19 +1,28 @@
 <div class="row">
     <div class="col-md-12">
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <div class="card">
             <!-- Account -->
             <div class="card-body">
-                <div class="d-flex align-items-start align-items-sm-center gap-6">
-                    <img src="{{ $user->avatar_url }}" alt="user-avatar" class="d-block w-px-100 h-px-100 rounded"
+                <div class="gap-6 d-flex align-items-start align-items-sm-center">
+                    <img src="{{ $user->avatar_url }}" alt="user-avatar" class="rounded d-block w-px-100 h-px-100"
                         id="uploadedAvatar" style="object-fit: cover;" />
                     <div class="button-wrapper">
-                        <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
+                        <label for="upload" class="mb-4 btn btn-primary me-3" tabindex="0">
                             <span class="d-none d-sm-block">رفع صورة جديدة</span>
                             <i class="ti ti-upload d-block d-sm-none"></i>
                             <input type="file" name="avatarUpload" id="upload" class="account-file-input" hidden
                                 accept="image/png, image/jpeg"  />
                         </label>
-                        <button type="button" class="btn btn-label-secondary account-image-reset mb-4">
+                        <button type="button" class="mb-4 btn btn-label-secondary account-image-reset">
                             <i class="ti ti-refresh-dot d-block d-sm-none"></i>
                             <span class="d-none d-sm-block">مسح</span>
                         </button>
@@ -21,19 +30,15 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body pt-4">
+            <div class="pt-4 card-body">
                 <div class="row">
                     <div class="mb-4 col-md-6">
                         <x-form.input label="الاسم" :value="$user->name" name="name" placeholder="محمد ...." required
                             autofocus />
                     </div>
                     <div class="mb-4 col-md-6">
-                        <x-form.input label="اسم المستخدم" :value="$user->username" name="username" placeholder="username"
-                            required />
-                    </div>
-                    <div class="mb-4 col-md-6">
                         <x-form.input type="email" label="البريد الالكتروني" :value="$user->email" name="email"
-                            placeholder="example@gmail.com" />
+                            placeholder="example@gmail.com" required />
                     </div>
                     <div class="mb-4 col-md-6">
                         @if (isset($btn_label))
@@ -48,6 +53,16 @@
                             <x-form.input type="password" label="تأكيد كلمة المرور" name="confirm_password"
                                     placeholder="****" required />
                         @endif
+                    </div>
+                    <div class="mb-4 col-md-6">
+                        <label for="role">الصلاحيات *</label>
+                        <select name="role" id="role" class="form-select" required>
+                            <option value="reviewer">المراجع</option>
+                            <option value="admin">مدير</option>
+                        </select>
+                    </div>
+                    <div class="mb-4 col-md-6">
+                        <x-form.select label="التخصص" name="specialization_id" :optionsid="$specializations" />
                     </div>
                 </div>
                 @if(!isset($settings_profile))

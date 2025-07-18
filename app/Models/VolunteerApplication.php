@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class VolunteerApplication extends Model
 {
     use HasFactory;
+    protected $table = 'volunteer_applications';
 
     protected $fillable = [
         'specialization_id',
@@ -34,18 +37,86 @@ class VolunteerApplication extends Model
         'completed_at',
     ];
 
+    // Relationships
     public function specialization()
     {
         return $this->belongsTo(Specialization::class);
     }
 
-    public function users()
+    public function rejectedBy()
     {
         return $this->belongsTo(User::class, 'rejected_by');
     }
 
     public function approvalTrackings()
     {
-        return $this->hasMany(ApprovalTracking::class, 'application_id');
+        return $this->hasMany(ApprovalTracking::class, 'volunteer_application_id');
+    }
+
+    // Scopes
+    // دالة فحص للمراجعين لعرض الطلبات التي تخصهم
+    public function scopeForReviewer(Builder $query, User $user)
+    {
+        return $query
+            ->where('specialization_id', $user->specialization_id)
+            ->where('status', 'pending')
+            ->where('current_approval_level', function ($q) use ($user) {
+                $q->select('order_sequence')
+                    ->from('approval_hierarchies')
+                    ->whereColumn('specialization_id', 'volunteer_applications.specialization_id')
+                    ->where('user_id', $user->id);
+            });
+    }
+
+    // Helpers
+    // دوال لفحص هل هذه المرحلة الأخيرة؟
+    public function isLastLevel(): bool
+    {
+        $max = ApprovalHierarchy::where('specialization_id', $this->specialization_id)
+            ->max('order_sequence');
+
+        return $this->current_approval_level >= $max;
+    }
+
+    // دالة لانتقال إلى المرحلة التالية
+    public function moveToNextLevel(): void
+    {
+        $this->increment('current_approval_level');
+
+        $nextHierarchy = ApprovalHierarchy::where('specialization_id', $this->specialization_id)
+            ->where('order_sequence', $this->current_approval_level)
+            ->first();
+        if ($nextHierarchy) {
+            $this->approvalTrackings()->create([
+                'approval_hierarchy_id' => $nextHierarchy->id,
+                'action' => 'pending',
+                'approved_by' => null,
+                'notes' => null,
+                'action_date' => null,
+            ]);
+        }else{
+            $this->completeApproval();
+        }
+    }
+
+    // دالة رفض الطلب
+    public function reject(User $user, string $reason): void
+    {
+        $this->update([
+            'status' => 'rejected',
+            'rejected_by' => $user->id,
+            'rejection_reason' => $reason,
+            'completed_at' => Carbon::now(),
+        ]);
+    }
+
+    // دالة قبول نهائي
+    public function completeApproval(): void
+    {
+        $this->update([
+            'current_approval_level' => $this->current_approval_level - 1,
+            'status' => 'approved',
+            'completed_at' => Carbon::now(),
+        ]);
     }
 }

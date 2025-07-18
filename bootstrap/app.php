@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web([
             LogLastUserActivity::class,
         ]);
+        $middleware->alias([
+            'check.form.open' => \App\Http\Middleware\CheckFormOpen::class,
+            'check.specialization.active' => \App\Http\Middleware\CheckSpecializationActive::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -1,10 +1,10 @@
 <x-dashboard-layout>
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            <h5 class="mb-0 card-title">جدول المستخدمين</h5>
+            <h5 class="mb-0 card-title">جدول التخصصات</h5>
             <div class="d-flex align-items-center">
-                @can('create', 'App\\Models\User')
-                    <a class="btn btn-success" href="{{route('dashboard.users.create')}}">
+                @can('create', 'App\\Models\Specialization')
+                    <a class="btn btn-success" href="{{route('dashboard.specializations.create')}}">
                         <i class="fa-solid fa-plus"></i>
                     </a>
                 @endcan
@@ -21,39 +21,25 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
-                            <th>الاسم</th>
-                            <th>البريد الالكتروني</th>
+                            <th>التخصص</th>
                             <th>الحالة</th>
-                            <th>نوعه</th>
-                            <th>أخر موعد تواجد</th>
+                            <th>عدد المراحل</th>
                             <th>الحدث</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <style>
-                            #user-1{
-                                display: none;
-                            }
-                        </style>
-                        @foreach($users as $user)
-                        <tr  id="user-{{$user->id}}">
+                        @foreach($specializations as $specialization)
+                        <tr>
                             <td style="width: 10px">{{ $loop->iteration - 1 }}</td>
-                            <td class="d-flex align-items-center">
-                                <div class="avatar avatar-{{ $user->last_activity >= now()->subMinutes(5) ? 'online' : 'offline' }}">
-                                    <img src="{{$user->avatar_url}}" alt="" class="rounded-circle">
-                                </div>
-                                {{$user->name}}
-                            </td>
-                            <td>{{$user->email}}</td>
+                            <td>{{$specialization->name}}</td>
                             <td>
-                                @if($user->last_activity >= now()->subMinutes(5))
+                                @if($specialization->is_active)
                                 <span class="badge bg-label-success me-1">نشط</span>
                                 @else
                                 <span class="badge bg-label-danger me-1">غير نشط</span>
                                 @endif
                             </td>
-                            <td>{{$user->role == 'admin' ? 'مدير' : 'مراجع'}}</td>
-                            <td>{{$user->last_activity}}</td>
+                            <td>{{$specialization->approvalHierarchies->count()}}</td>
                             <td>
                                 <div class="dropdown">
                                     <button type="button" class="p-0 btn dropdown-toggle hide-arrow"
@@ -61,18 +47,18 @@
                                         <i class="ti ti-dots-vertical"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('view', 'App\\Models\User')
-                                        <a class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;" href="{{route('dashboard.users.show',$user->id)}}">
+                                        @can('view', 'App\\Models\Specialization')
+                                        <a class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;" href="{{route('dashboard.specializations.show',$specialization->id)}}">
                                             <i class="ti ti-eye me-1"></i>عرض
                                         </a>
                                         @endcan
-                                        @can('update', 'App\\Models\User')
-                                        <a class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;" href="{{route('dashboard.users.edit',$user->id)}}">
+                                        @can('update', 'App\\Models\Specialization')
+                                        <a class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;" href="{{route('dashboard.specializations.edit',$specialization->id)}}">
                                             <i class="ti ti-pencil me-1"></i>تعديل
                                         </a>
                                         @endcan
-                                        @can('delete', 'App\\Models\User')
-                                        <form action="{{route('dashboard.users.destroy',$user->id)}}" method="post">
+                                        @can('delete', 'App\\Models\Specialization')
+                                        <form action="{{route('dashboard.specializations.destroy',$specialization->id)}}" method="post">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;">

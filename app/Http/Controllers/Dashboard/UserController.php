@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\RoleUser;
+use App\Models\Specialization;
 use App\Models\User;
 use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
@@ -31,7 +32,8 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         $user = new User();
-        return view('dashboard.users.create', compact('user'));
+        $specializations = Specialization::get();
+        return view('dashboard.users.create', compact('user','specializations'));
     }
 
     /**
@@ -43,7 +45,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'username' => 'required|string|unique:users,username',
+            'email' => 'required|string|unique:users,email',
             'password' => 'required|same:confirm_password',
             'confirm_password' => 'required|same:password',
         ],[
@@ -58,16 +60,19 @@ class UserController extends Controller
                 $request->merge(['avatar' => $path]);
             }
             $user = User::create($request->all());
-            foreach ($request->abilities as $role) {
-                RoleUser::create([
-                    'role_name' => $role,
-                    'user_id' => $user->id,
-                    'ability' => 'allow',
-                ]);
+            if ($request->abilities != null) {
+                foreach ($request->abilities as $role) {
+                    RoleUser::create([
+                        'role_name' => $role,
+                        'user_id' => $user->id,
+                        'ability' => 'allow',
+                    ]);
+                }
             }
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
+            throw $e;
             return redirect()->back()->with('error', $e->getMessage());
         }
         return redirect()->route('dashboard.users.index')->with('success', 'تم اضافة مستخدم جديد');
@@ -106,7 +111,8 @@ class UserController extends Controller
     {
         $this->authorize('update', User::class);
         $btn_label = "تعديل";
-        return view('dashboard.users.edit', compact('user', 'btn_label'));
+        $specializations = Specialization::get();
+        return view('dashboard.users.edit', compact('user', 'btn_label','specializations'));
     }
 
     /**
@@ -117,7 +123,7 @@ class UserController extends Controller
         $this->authorize('update', User::class);
         $request->validate([
             'name' => 'required',
-            'username' => 'required|string|unique:users,username,'.$user->id,
+            'email' => 'required|string|unique:users,email,'.$user->id,
         ]);
         DB::beginTransaction();
         try{
@@ -137,7 +143,6 @@ class UserController extends Controller
             }
             $user->update([
                 'name' => $request->name,
-                'username' => $request->username,
                 'email' => $request->email,
                 'avatar' => $avatar ?? null
             ]);
