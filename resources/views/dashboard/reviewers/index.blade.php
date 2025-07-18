@@ -74,15 +74,6 @@
             function closeModal() {
                 $('#applicationModal').modal('hide');
             }
-            $('#rejectButton').on('click', function() {
-                const id = $(this).data('id');
-                decisionSubmit('reject', id);
-            });
-            $('#approveButton').on('click', function() {
-                const id = $(this).data('id');
-                decisionSubmit('approve', id);
-            });
-
             function decisionSubmit(type, id) {
                 $.ajax({
                     url: `{{ route('dashboard.reviewers.decision', ':id') }}`.replace(':id', id),

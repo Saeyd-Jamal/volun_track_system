@@ -17,5 +17,23 @@
             'create' => 'اضافة',
             'update' => 'تعديل',
         ],
+        'specializations' => [
+            'name' => 'التخصصات',
+            'view' => 'عرض',
+            'create' => 'اضافة',
+            'update' => 'تعديل',
+        ],
+        'volunteer_applications' => [
+            'name' => 'طلبات التطوع',
+            'view' => 'عرض',
+            'create' => 'اضافة',
+            'update' => 'تعديل',
+        ],
+        'form_settings' => [
+            'name' => 'إعدادات النماذج',
+            'view' => 'عرض',
+            'create' => 'اضافة',
+            'update' => 'تعديل',
+        ],
     ];
 

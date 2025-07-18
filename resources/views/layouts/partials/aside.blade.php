@@ -40,12 +40,21 @@
             </a>
         </li>
         @endcan
+
         <li class="menu-item {{ request()->is('reviewers/*') || request()->is('reviewers') ? 'active' : '' }}">
             <a href="{{ route('dashboard.reviewers.index') }}" class="menu-link">
                 <i class="fa-solid fa-list me-2"></i>
                 <div data-i18n="users">قائمة الطلبات</div>
             </a>
         </li>
+        @can('view', 'App\\Models\\Constants')
+        <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.constants.index') }}" class="menu-link">
+                <i class="fa-solid fa-list me-2"></i>
+                <div data-i18n="users">الثوابت</div>
+            </a>
+        </li>
+        @endcan
         {{-- <li class="menu-item">
             <a href="page-2.html" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>

@@ -13,7 +13,7 @@
             <input type="email" class="form-control" value="{{ $app->email }}" readonly>
         </div>
     </div>
-    
+
     <div class="mb-3 row">
         <div class="col">
             <label class="form-label">الجنس</label>
@@ -24,7 +24,7 @@
             <input type="text" class="form-control" value="{{ $app->birth_date }}" readonly>
         </div>
     </div>
-    
+
     <div class="mb-3 row">
         <div class="col">
             <label class="form-label">الجامعة</label>
@@ -35,7 +35,7 @@
             <input type="text" class="form-control" value="{{ $app->major }}" readonly>
         </div>
     </div>
-    
+
     <div class="mb-3 row">
         <div class="col">
             <label class="form-label">السنة الدراسية</label>
@@ -46,7 +46,7 @@
             <input type="text" class="form-control" value="{{ $app->phone }}" readonly>
         </div>
     </div>
-    
+
     <div class="mb-3 row">
         <div class="col">
             <label class="form-label">المدينة</label>
@@ -57,7 +57,7 @@
             <input type="text" class="form-control" value="{{ $app->volunteer_place }}" readonly>
         </div>
     </div>
-    
+
     <div class="mb-3 row">
         <div class="col">
             <label class="form-label">التخصص المطلوب</label>
@@ -78,14 +78,14 @@
             <input type="text" class="form-control" value="{{ $status }}" readonly>
         </div>
     </div>
-    
+
     @if ($app->motivation)
         <div class="mb-3">
             <label class="form-label">الدافع للتطوع</label>
             <textarea class="form-control" rows="2" readonly>{{ $app->motivation }}</textarea>
         </div>
     @endif
-    
+
     @if ($app->skills)
         <div class="mb-3">
             <label class="form-label">المهارات</label>
@@ -94,49 +94,51 @@
             </div>
         </div>
     @endif
-    
+
     @if ($app->previous_experience)
         <div class="mb-3">
             <label class="form-label">الخبرة السابقة</label>
             <textarea class="form-control" rows="2" readonly>{{ $app->previous_experience }}</textarea>
         </div>
     @endif
-    
+
     @if ($app->availability)
         <div class="mb-3">
             <label class="form-label">متى متاح؟</label>
             <input type="text" class="form-control" value="{{ $app->availability }}" readonly>
         </div>
     @endif
-    
+
     @if ($app->notes)
         <div class="mb-3">
             <label class="form-label">ملاحظات</label>
             <textarea class="form-control" rows="2" readonly>{{ $app->notes }}</textarea>
         </div>
     @endif
-    
+
     @if ($app->file)
         <div class="mb-3">
             <label class="form-label">السيرة الذاتية</label>
-            <a href="{{ asset('storage/' . $app->file) }}" target="_blank" class="btn btn-outline-primary btn-sm">عرض الملف</a>
+            <a href="{{ asset('storage/' . $app->file) }}" target="_blank" class="btn btn-outline-primary btn-sm">عرض
+                الملف</a>
         </div>
     @endif
-    
-    
+
+
     <div class="mb-3">
         <label class="form-label">سبب الرفض (إذا تم رفض الطلب)</label>
         <textarea class="form-control" id="reason" rows="2" @if ($app->status == 'pending') readonly @endif>{{ $app->rejection_reason }}</textarea>
     </div>
-    
+
 </div>
 <div class="modal-footer" id="modalFooter">
     @if ($app->status == 'pending')
-        <button type="button" id="rejectButton" data-id="{{ $app->id }}" class="btn btn-label-secondary"
+        <button type="button" id="rejectButton" onclick="decisionSubmit('reject', {{ $app->id }})" data-id="{{ $app->id }}" class="btn btn-label-secondary"
             data-bs-dismiss="modal">
             رفض
         </button>
-        <button type="button" id="approveButton" data-id="{{ $app->id }}" class="btn btn-primary">موافقة</button>
+        <button type="button" id="approveButton" onclick="decisionSubmit('approve', {{ $app->id }})" data-id="{{ $app->id }}"
+            class="btn btn-primary">موافقة</button>
     @else
         <span class="badge bg-label-success me-1">تم الموافقة عليها</span>
     @endif

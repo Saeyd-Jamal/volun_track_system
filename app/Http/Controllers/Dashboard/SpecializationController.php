@@ -28,7 +28,7 @@ class SpecializationController extends Controller
         $this->authorize('create', Specialization::class);
         $specialization = new Specialization();
         $specialization->is_active = 1;
-        $users = User::where('role', 'reviewer')->get();
+        $users = User::where('role', 'reviewer')->where('specialization_id', null)->get();
         return view('dashboard.specializations.create', compact('specialization', 'users'));
     }
 
@@ -82,7 +82,7 @@ class SpecializationController extends Controller
         $this->authorize('update', Specialization::class);
         $btn_label = "تعديل";
         $specialization = Specialization::with('approvalHierarchies')->findOrFail($id);
-        $users = User::where('role', 'reviewer')->get();
+        $users = User::where('role', 'reviewer')->where('specialization_id', $specialization->id || null)->get();
         return view('dashboard.specializations.edit', compact('specialization', 'btn_label', 'users'));
     }
 
