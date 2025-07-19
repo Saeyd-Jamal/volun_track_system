@@ -18,15 +18,25 @@ class ApplicationController extends Controller
     public function index()
     {
 
-        // Get constants and specializations
         $constants = Constant::get();
-        $cities = $constants->where('key', 'cities')->select('value')->first() ? json_decode($constants->where('key', 'cities')->select('value')->first()['value']) : [];
-        $universities = $constants->where('key', 'universities')->select('value')->first() ? json_decode($constants->where('key', 'universities')->select('value')->first()['value']) : [];
-        $volunteer_places = $constants->where('key', 'volunteer_places')->select('value')->first() ? json_decode($constants->where('key', 'volunteer_places')->select('value')->first()['value']) : [];
-        $skills = $constants->where('key', 'skills')->select('value')->first() ? json_decode($constants->where('key', 'skills')->select('value')->first()['value']) : [];
+
+        $citiesValue = optional($constants->where('key', 'cities')->first())->value;
+        $universitiesValue = optional($constants->where('key', 'universities')->first())->value;
+        $volunteerPlacesValue = optional($constants->where('key', 'volunteer_places')->first())->value;
+
+        $cities = is_string($citiesValue) ? json_decode($citiesValue, true) : [];
+        $universities = is_string($universitiesValue) ? json_decode($universitiesValue, true) : [];
+        $volunteer_places = is_string($volunteerPlacesValue) ? json_decode($volunteerPlacesValue, true) : [];
 
         $specializations = Specialization::active()->get();
-        return view('index', compact('specializations', 'cities', 'universities', 'volunteer_places', 'skills'));
+
+        return view('index', compact(
+            'specializations',
+            'cities',
+            'universities',
+            'volunteer_places'
+
+        ));
     }
 
     public function store(ApplicationRequest $request)
@@ -35,7 +45,7 @@ class ApplicationController extends Controller
         try {
             $request['skills'] = is_array($request['skills']) ? implode(', ', $request['skills']) : null;
 
-            if($request->file) {
+            if ($request->file) {
                 $file = $request->file('file');
                 $file_name = time() . '_' . $file->getClientOriginalName();
                 $path = Storage::storeAs('uploads', $file, $file_name)->disk('public');

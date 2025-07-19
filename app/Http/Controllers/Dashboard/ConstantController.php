@@ -10,37 +10,34 @@ use Illuminate\Http\Request;
 
 class ConstantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function edit()
     {
-        $constants = Constant::get();
-        return view('dashboard.pages.constants',compact('constants'));
-    }
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        foreach($request->except('_token') as $key => $value){
-            Constant::updateOrCreate([
-                'key' => $key,
-            ],[
-                'value' => $value,
-            ]);
-        }
-        return redirect()->route('dashboard.constants.index')->with('success','تم تحديث القيم');
+        $constants = Constant::whereIn('key', ['cities', 'universities', 'volunteering_places'])
+            ->get()
+            ->keyBy('key');
+
+        return view('dashboard.constant', compact('constants'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request)
+    public function update(Request $request)
     {
-        if($request->state_effectiveness){
-            Constant::findOrFail($request->state_effectiveness)->delete();
+        $data = $request->validate([
+            'cities' => 'array',
+            'cities.*' => 'string',
+            'universities' => 'array',
+            'universities.*' => 'string',
+            'volunteering_places' => 'array',
+            'volunteering_places.*' => 'string',
+        ]);
+
+        foreach ($data as $key => $values) {
+            Constant::updateOrCreate(
+                ['key' => $key],
+                ['value' => array_values($values)] 
+            );
         }
-        return redirect()->route('dashboard.constants.index')->with('danger','تم حذف القيمة المحددة');
+
+        return redirect()->back()->with('success', 'تم تحديث الثوابت بنجاح');
     }
+    
 }

@@ -49,12 +49,20 @@
         </li>
         @can('view', 'App\\Models\\Constants')
         <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.constants.index') }}" class="menu-link">
+            <a href="{{ route('dashboard.constants.edit') }}" class="menu-link">
                 <i class="fa-solid fa-list me-2"></i>
                 <div data-i18n="users">الثوابت</div>
             </a>
         </li>
         @endcan
+
+         <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.form-settings.edit') }}" class="menu-link">
+                <i class="fa-solid fa-list me-2"></i>
+                <div data-i18n="users">الاعدادات</div>
+            </a>
+        </li>
+
         {{-- <li class="menu-item">
             <a href="page-2.html" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-app-window"></i>

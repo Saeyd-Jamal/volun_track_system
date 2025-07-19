@@ -3,13 +3,14 @@
 
 // dashboard routes
 
-use App\Http\Controllers\Dashboard\ActivityLogController;
-use App\Http\Controllers\Dashboard\ConstantController;
-use App\Http\Controllers\Dashboard\HomeController;
-use App\Http\Controllers\Dashboard\ReviewController;
-use App\Http\Controllers\Dashboard\SpecializationController;
-use App\Http\Controllers\Dashboard\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\HomeController;
+use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\ReviewController;
+use App\Http\Controllers\Dashboard\ConstantController;
+use App\Http\Controllers\Dashboard\ActivityLogController;
+use App\Http\Controllers\Dashboard\FormSettingController;
+use App\Http\Controllers\Dashboard\SpecializationController;
 
 Route::get('dashboard', function () {
     return redirect()->route('dashboard.home');
@@ -42,7 +43,15 @@ Route::group([
     Route::post('/reviewers/{id}/decision', [ReviewController::class, 'decision'])->name('reviewers.decision'); // POST لموافقة/رفض
 
     // Resources
-    Route::resource('constants', ConstantController::class)->only(['index','store','destroy']);
+   
+
+    //Setting
+   Route::get('/form-settings/edit', [FormSettingController::class, 'edit'])->name('form-settings.edit');
+   Route::post('/form-settings/update', [FormSettingController::class, 'update'])->name('form-settings.update');  
+
+   //constant
+   Route::get('/constants/edit', [ConstantController::class, 'edit'])->name('constants.edit');
+   Route::post('/constants/update', [ConstantController::class, 'update'])->name('constants.update');
 
     Route::resources([
         'users' => UserController::class,

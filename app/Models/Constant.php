@@ -10,4 +10,8 @@ class Constant extends Model
     use HasFactory;
     public $timestamps = false;
     protected $fillable = ['key', 'value'];
+
+    protected $casts = [
+        'value' => 'array',
+    ];
 }

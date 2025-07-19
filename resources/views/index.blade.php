@@ -60,7 +60,7 @@
             </ul>
         </div>
     @endif
-    <form action="{{ route('application.store') }}" method="POST" class="container form-section">
+    <form action="{{ route('application.store') }}" method="POST" class="container form-section" enctype="multipart/form-data">
         @csrf
         <div class="form-title">نموذج التسجيل للتطوع</div>
         <div class="p-4 card">
@@ -167,15 +167,7 @@
             </label>
             <textarea id="motivation" name="motivation" class="form-control" rows="2" value="{{ old('motivation') }}"></textarea>
         </div>
-        <div class="p-4 card">
-            <label class="form-label">المهارات</label>
-            @foreach ($skills as $index => $skill)
-            <div class="form-check">
-                <input class="form-check-input" @checked(in_array($skill, old('skills', []))) type="checkbox" value="{{ $skill }}" id="skill{{ $index }}" name="skills[]">
-                <label class="form-check-label" for="skill{{ $index }}">{{ $skill }}</label>
-            </div>
-            @endforeach
-        </div>
+       
         <div class="p-4 card">
             <label for="previous_experience" class="form-label">خبرات سابقة</label>
             <textarea id="previous_experience" name="previous_experience" class="form-control" rows="2" value="{{ old('previous_experience') }}"></textarea>
