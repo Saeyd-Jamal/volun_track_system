@@ -70,8 +70,7 @@ class SpecializationController extends Controller
      */
     public function show(Specialization $specialization)
     {
-        $this->authorize('view', Specialization::class);
-        return view('dashboard.specializations.show', compact('specialization'));
+        //
     }
 
     /**
@@ -82,7 +81,12 @@ class SpecializationController extends Controller
         $this->authorize('update', Specialization::class);
         $btn_label = "تعديل";
         $specialization = Specialization::with('approvalHierarchies')->findOrFail($id);
-        $users = User::where('role', 'reviewer')->where('specialization_id', $specialization->id || null)->get();
+        $users = User::where('role', 'reviewer')
+            ->where(function ($query) use ($specialization) {
+                $query->where('specialization_id', $specialization->id)
+                    ->orWhereNull('specialization_id');
+            })
+            ->get();
         return view('dashboard.specializations.edit', compact('specialization', 'btn_label', 'users'));
     }
 

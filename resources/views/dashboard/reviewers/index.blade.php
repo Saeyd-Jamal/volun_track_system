@@ -54,7 +54,7 @@
     <div id="applicationModal" class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content" id="applicationDetails">
-                
+
             </div>
         </div>
     </div>
@@ -75,6 +75,10 @@
                 $('#applicationModal').modal('hide');
             }
             function decisionSubmit(type, id) {
+                if(type == 'reject' && $('#reason').val() == '') {
+                    alert('السبب مطلوب');
+                    return;
+                }
                 $.ajax({
                     url: `{{ route('dashboard.reviewers.decision', ':id') }}`.replace(':id', id),
                     type: 'POST',

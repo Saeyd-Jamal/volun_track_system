@@ -18,8 +18,14 @@ class CheckSpecializationActive
     {
         $user = Auth::user();
 
-        if (!$user || !$user->specialization || !$user->specialization->is_active) {
-            return abort(403, 'تخصصك غير مفعل حاليًا.');
+        if ($user && $user->role === 'admin') {
+            return $next($request);
+        }
+        if ($request->routeIs('dashboard.reviewers.index')) {
+            return $next($request);
+        }
+        if (!$user || $user->specialization_id === null || !$user->specialization->is_active) {
+            abort(403, 'تخصصك غير مفعل حاليًا.');
         }
         return $next($request);
     }

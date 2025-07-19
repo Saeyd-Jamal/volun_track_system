@@ -1,5 +1,5 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-    <div class="app-brand demo"  style="overflow: visible">
+    <div class="app-brand demo" style="overflow: visible">
         <a href="{{ route('dashboard.home') }}" class="app-brand-link">
             <span class="app-brand-logo demo" style="overflow: visible">
                 <img src=" {{ asset('imgs/favicon.ico') }}" alt="Logo" width="60">
@@ -24,89 +24,78 @@
                 <div data-i18n="home">الرئيسية</div>
             </a>
         </li>
-        @can('view', 'App\\Models\\User')
-        <li class="menu-item {{ request()->is('users/*') || request()->is('users') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.users.index') }}" class="menu-link">
-                <i class="fa-solid fa-users me-2"></i>
-                <div data-i18n="users">المستخدمين</div>
-            </a>
+
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Apps &amp; Pages">الأساسيات</span>
         </li>
-        @endcan
         @can('view', 'App\\Models\\Specialization')
-        <li class="menu-item {{ request()->is('specializations/*') || request()->is('specializations') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.specializations.index') }}" class="menu-link">
-                <i class="fa-solid fa-list me-2"></i>
-                <div data-i18n="users">التخصصات</div>
-            </a>
-        </li>
+            <li
+                class="menu-item {{ request()->is('specializations/*') || request()->is('specializations') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.specializations.index') }}" class="menu-link">
+                    <i class="fa-solid fa-list me-2"></i>
+                    <div data-i18n="users">التخصصات</div>
+                </a>
+            </li>
         @endcan
-
-        <li class="menu-item {{ request()->is('reviewers/*') || request()->is('reviewers') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.reviewers.index') }}" class="menu-link">
-                <i class="fa-solid fa-list me-2"></i>
-                <div data-i18n="users">قائمة الطلبات</div>
-            </a>
-        </li>
-        @can('view', 'App\\Models\\Constants')
-        <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.constants.edit') }}" class="menu-link">
-                <i class="fa-solid fa-list me-2"></i>
-                <div data-i18n="users">الثوابت</div>
-            </a>
-        </li>
-        @endcan
-
-         <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
-            <a href="{{ route('dashboard.form-settings.edit') }}" class="menu-link">
-                <i class="fa-solid fa-list me-2"></i>
-                <div data-i18n="users">الاعدادات</div>
-            </a>
-        </li>
-
-        {{-- <li class="menu-item">
-            <a href="page-2.html" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-app-window"></i>
-                <i class="fa-solid fa-house me-2"></i>
-                <div data-i18n="Page 2">Page 2</div>
-            </a>
-        </li>
         <li class="menu-item">
             <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
-                <div data-i18n="Dashboards">Dashboards</div>
+                <div data-i18n="Dashboards">قائمة الطلبات</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="index.html" class="menu-link">
+                    <a href="{{ route('dashboard.reviewers.index') }}" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-chart-pie-2"></i>
-                        <div data-i18n="Analytics">Analytics</div>
+                        <div data-i18n="Analytics">جميع الطلبات</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="dashboards-crm.html" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-3d-cube-sphere"></i>
-                        <div data-i18n="CRM">CRM</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="app-ecommerce-dashboard.html" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
-                        <div data-i18n="eCommerce">eCommerce</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="app-logistics-dashboard.html" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-truck"></i>
-                        <div data-i18n="Logistics">Logistics</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="app-academy-dashboard.html" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-book"></i>
-                        <div data-i18n="Academy">Academy</div>
-                    </a>
-                </li>
+                @if (Auth::user()->role == 'admin')
+                    <li class="menu-item">
+                        <a href="{{ route('dashboard.reviewers.index', ['status' => 'approved']) }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-chart-pie-2"></i>
+                            <div data-i18n="Analytics">المقبولة</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('dashboard.reviewers.index', ['status' => 'rejected']) }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-chart-pie-2"></i>
+                            <div data-i18n="Analytics">المرفوضة</div>
+                        </a>
+                    </li>
+                @endif
             </ul>
-        </li> --}}
+        </li>
+
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Apps &amp; Pages">الإعدادات</span>
+        </li>
+        @can('view', 'App\\Models\\User')
+            <li class="menu-item {{ request()->is('users/*') || request()->is('users') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.users.index') }}" class="menu-link">
+                    <i class="fa-solid fa-users me-2"></i>
+                    <div data-i18n="users">المستخدمين</div>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->is('logs/*') || request()->is('logs') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.logs.index') }}" class="menu-link">
+                    <i class="fa-solid fa-history me-2"></i>
+                    <div data-i18n="users">سجل الأنشطة</div>
+                </a>
+            </li>
+        @endcan
+        @can('view', 'App\\Models\\Constants')
+            <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.constants.edit') }}" class="menu-link">
+                    <i class="fa-solid fa-cog me-2"></i>
+                    <div data-i18n="users">الثوابت</div>
+                </a>
+            </li>
+        @endcan
+        <li class="menu-item {{ request()->is('constants/*') || request()->is('constants') ? 'active' : '' }}">
+            <a href="{{ route('dashboard.form-settings.edit') }}" class="menu-link">
+                <i class="fa-solid fa-gear me-2"></i>
+                <div data-i18n="users">الاعدادات</div>
+            </a>
+        </li>
     </ul>
 </aside>

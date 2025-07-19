@@ -29,7 +29,7 @@
                         <div class="p-3 mb-3 rounded border row approval-step position-relative bg-light-subtle">
                             <div class="mb-2 col-md-4">
                                 <x-form.input label="اسم الدور" :value="$hierarchy->role_name" name="hierarchies[{{$i}}][role_name]" required />
-                            </div>                
+                            </div>
                             <div class="mb-2 col-md-4">
                                 <x-form.select :optionsid="$users" :value="$hierarchy->user_id" name="hierarchies[{{$i}}][user_id]" label="المشرف" />
                             </div>
@@ -38,7 +38,7 @@
                                 <button type="button" class="btn btn-light btn-sm move-up">⬆️</button>
                                 <button type="button" class="btn btn-light btn-sm move-down">⬇️</button>
                                 <input type="hidden" name="hierarchies[{{$i}}][order_sequence]" class="order-sequence-input" value="{{ $i + 1 }}">
-                            </div>   
+                            </div>
                             <div class="col-md-1 d-flex align-items-center">
                                 <button type="button" class="btn btn-sm btn-danger remove-step">×</button>
                             </div>
@@ -50,7 +50,7 @@
                     <div class="p-3 mb-3 rounded border row approval-step position-relative bg-light-subtle">
                         <div class="mb-2 col-md-4">
                             <x-form.input label="اسم الدور" name="hierarchies[__index__][role_name]" required />
-                        </div>                
+                        </div>
                         <div class="mb-2 col-md-4">
                             <x-form.select :optionsid="$users" name="hierarchies[__index__][user_id]" label="المشرف" />
                         </div>
@@ -59,7 +59,7 @@
                             <button type="button" class="btn btn-light btn-sm move-up">⬆️</button>
                             <button type="button" class="btn btn-light btn-sm move-down">⬇️</button>
                             <input type="hidden" name="hierarchies[__index__][order_sequence]" class="order-sequence-input" value="1">
-                        </div>   
+                        </div>
                         <div class="col-md-1 d-flex align-items-center">
                             <button type="button" class="btn btn-sm btn-danger remove-step">×</button>
                         </div>
@@ -94,7 +94,7 @@
         </script>
         <script>
             let stepIndex = {{ $lastIndex ?? 0 }};
-        
+
             function updateStepOrders() {
                 $('#approval-steps-wrapper .approval-step').each(function(index) {
                     $(this).find('.order-sequence-input').val(index + 1);
@@ -120,7 +120,7 @@
                 }
             });
 
-        
+
             // ✅ إضافة مرحلة جديدة
             $('#add-step-btn').on('click', function () {
                 const template = $('#approval-step-template').html().replace(/__index__/g, stepIndex);
@@ -128,13 +128,13 @@
                 stepIndex++;
                 updateStepOrders();
             });
-        
+
             // ✅ حذف مرحلة
             $(document).on('click', '.remove-step', function () {
                 $(this).closest('.approval-step').remove();
                 updateStepOrders();
             });
-        
+
         </script>
     @endpush
 </div>

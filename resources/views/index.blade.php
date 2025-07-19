@@ -69,6 +69,7 @@
                 <span class="required-star">*</span>
             </label>
             <input type="email" id="email" name="email" class="form-control" required value="{{ old('email') }}">
+            <div class="invalid-feedback" style="display: none;"></div>
         </div>
         <div class="p-4 card">
             <label for="full_name" class="form-label">
@@ -167,7 +168,7 @@
             </label>
             <textarea id="motivation" name="motivation" class="form-control" rows="2" value="{{ old('motivation') }}"></textarea>
         </div>
-       
+
         <div class="p-4 card">
             <label for="previous_experience" class="form-label">خبرات سابقة</label>
             <textarea id="previous_experience" name="previous_experience" class="form-control" rows="2" value="{{ old('previous_experience') }}"></textarea>
@@ -199,6 +200,7 @@
                         $(this).next('.invalid-feedback').remove();
                     } else {
                         $(this).addClass('is-invalid');
+                        $(this).next('.invalid-feedback').remove();
                         $(this).after('<div class="invalid-feedback">البريد الإلكتروني غير صحيح.</div>');
                     }
                     $.ajax({
@@ -211,6 +213,7 @@
                         success: function(response) {
                             if (response.exists) {
                                 $('#email').addClass('is-invalid');
+                                $(this).next('.invalid-feedback').remove();
                                 $('#email').after('<div class="invalid-feedback">البريد الإلكتروني موجود بالفعل.</div>');
                                 $('#submit-btn').prop('disabled', true);
                             } else {

@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Constant;
+use App\Models\Specialization;
 use App\Models\User;
+use App\Observers\ConstantObserver;
+use App\Observers\SpecializationObserver;
 use App\Observers\UserObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
@@ -40,21 +44,12 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
-        // the Authorization for Report Page
-        // Gate::define('report.view', function ($user) {
-        //     if($user instanceof User) {
-        //         if($user->roles->contains('role_name', 'report.view')) {
-        //             return true;
-        //         }
-        //         return false;
-        //     }
-        // });
-
-
 
 
         // Observe For Models
         User::observe(UserObserver::class);
+        Constant::observe(ConstantObserver::class);
+        Specialization::observe(SpecializationObserver::class);
 
 
     }

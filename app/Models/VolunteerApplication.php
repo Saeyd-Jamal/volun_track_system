@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ActivityLogService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,10 +49,6 @@ class VolunteerApplication extends Model
         return $this->belongsTo(User::class, 'rejected_by');
     }
 
-    public function approvalTrackings()
-    {
-        return $this->hasMany(ApprovalTracking::class, 'volunteer_application_id');
-    }
 
     // Scopes
     // دالة فحص للمراجعين لعرض الطلبات التي تخصهم
@@ -87,13 +84,14 @@ class VolunteerApplication extends Model
             ->where('order_sequence', $this->current_approval_level)
             ->first();
         if ($nextHierarchy) {
-            $this->approvalTrackings()->create([
-                'approval_hierarchy_id' => $nextHierarchy->id,
-                'action' => 'pending',
-                'approved_by' => null,
-                'notes' => null,
-                'action_date' => null,
-            ]);
+            // تسجيل الحدث
+            ActivityLogService::log(
+                'Updated',
+                'VolunteerApplication',
+                "تم الموافقة على طلب التطوع",
+                $this->getOriginal(),
+                $this->getChanges()
+            );
         }else{
             $this->completeApproval();
         }
@@ -108,6 +106,14 @@ class VolunteerApplication extends Model
             'rejection_reason' => $reason,
             'completed_at' => Carbon::now(),
         ]);
+        // تسجيل الحدث
+        ActivityLogService::log(
+            'Updated',
+            'VolunteerApplication',
+            "تم رفض طلب التطوع",
+            $this->getOriginal(),
+            $this->getChanges()
+        );
     }
 
     // دالة قبول نهائي

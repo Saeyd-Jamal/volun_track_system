@@ -47,11 +47,6 @@
                                         <i class="ti ti-dots-vertical"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        @can('view', 'App\\Models\Specialization')
-                                        <a class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;" href="{{route('dashboard.specializations.show',$specialization->id)}}">
-                                            <i class="ti ti-eye me-1"></i>عرض
-                                        </a>
-                                        @endcan
                                         @can('update', 'App\\Models\Specialization')
                                         <a class="dropdown-item" style="margin: 0.5rem -0.75rem; text-align: right;" href="{{route('dashboard.specializations.edit',$specialization->id)}}">
                                             <i class="ti ti-pencil me-1"></i>تعديل

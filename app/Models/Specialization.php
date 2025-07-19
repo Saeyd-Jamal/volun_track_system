@@ -22,7 +22,7 @@ class Specialization extends Model
         return $query->where('is_active', true);
     }
 
-    // Relations
+    // Relationship
     public function users()
     {
         return $this->hasMany(User::class);

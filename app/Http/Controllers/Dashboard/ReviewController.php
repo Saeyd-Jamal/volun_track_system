@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\VolunteerApplication;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,8 +14,14 @@ class ReviewController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if($user->role ==  'admin') {
-            $applications = VolunteerApplication::where('status', 'approved')->get();
+        $request = request();
+        $status = $request->status;
+        if ($user->role ==  'admin') {
+            if ($status != null) {
+                $applications = VolunteerApplication::where('status', $status)->get();
+            } else {
+                $applications = VolunteerApplication::get();
+            }
         } else {
             $applications = VolunteerApplication::forReviewer($user)->get();
         }
@@ -39,7 +46,15 @@ class ReviewController extends Controller
             $app->moveToNextLevel();
         }
 
+        // تسجيل الحدث
+        ActivityLogService::log(
+            'Updated',
+            'VolunteerApplication',
+            "تم تعديل طلب التطوع.",
+            $app->getOriginal(),
+            $app->getChanges()
+        );
+
         return response()->json(['success' => true]);
     }
-
 }

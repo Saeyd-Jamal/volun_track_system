@@ -18,7 +18,7 @@ Route::get('dashboard', function () {
 
 Route::group([
     'prefix' => 'dashboard',
-    'middleware' => ['auth'],
+    'middleware' => ['auth', 'check.specialization.active'],
     'as' => 'dashboard.'
 ], function () {
     /* ********************************************************** */
@@ -43,11 +43,11 @@ Route::group([
     Route::post('/reviewers/{id}/decision', [ReviewController::class, 'decision'])->name('reviewers.decision'); // POST لموافقة/رفض
 
     // Resources
-   
+
 
     //Setting
    Route::get('/form-settings/edit', [FormSettingController::class, 'edit'])->name('form-settings.edit');
-   Route::post('/form-settings/update', [FormSettingController::class, 'update'])->name('form-settings.update');  
+   Route::post('/form-settings/update', [FormSettingController::class, 'update'])->name('form-settings.update');
 
    //constant
    Route::get('/constants/edit', [ConstantController::class, 'edit'])->name('constants.edit');

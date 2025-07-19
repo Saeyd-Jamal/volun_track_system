@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\VolunteerApplication;
 use App\Http\Requests\ApplicationRequest;
 use App\Models\ApprovalHierarchy;
-use App\Models\ApprovalTracking;
 use App\Models\Constant;
 use App\Models\Specialization;
+use App\Services\ActivityLogService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,16 +18,23 @@ class ApplicationController extends Controller
     public function index()
     {
 
-        $constants = Constant::get();
+        $constants = Constant::whereIn('key', ['cities', 'universities', 'volunteer_places'])
+            ->get()
+            ->pluck('value', 'key')
+            ->mapWithKeys(function ($value, $key) {
+                // دعم للحالتين: string أو decoded مسبقًا
+                if (is_array($value)) {
+                    return [$key => $value];
+                }
 
-        $citiesValue = optional($constants->where('key', 'cities')->first())->value;
-        $universitiesValue = optional($constants->where('key', 'universities')->first())->value;
-        $volunteerPlacesValue = optional($constants->where('key', 'volunteer_places')->first())->value;
+                $decoded = json_decode($value, true);
 
-        $cities = is_string($citiesValue) ? json_decode($citiesValue, true) : [];
-        $universities = is_string($universitiesValue) ? json_decode($universitiesValue, true) : [];
-        $volunteer_places = is_string($volunteerPlacesValue) ? json_decode($volunteerPlacesValue, true) : [];
+                return [$key => is_array($decoded) ? $decoded : []];
+            });
 
+        $cities = $constants['cities'] ?? [];
+        $universities = $constants['universities'] ?? [];
+        $volunteer_places = $constants['volunteer_places'] ?? [];
         $specializations = Specialization::active()->get();
 
         return view('index', compact(
@@ -35,7 +42,6 @@ class ApplicationController extends Controller
             'cities',
             'universities',
             'volunteer_places'
-
         ));
     }
 
@@ -59,14 +65,14 @@ class ApplicationController extends Controller
                 ->first();
 
             if ($firstHierarchy) {
-                ApprovalTracking::create([
-                    'volunteer_application_id' => $application->id,
-                    'approval_hierarchy_id' => $firstHierarchy->id,
-                    'action' => 'pending',
-                    'approved_by' => null,
-                    'notes' => null,
-                    'action_date' => null,
-                ]);
+                // تسجيل الحدث
+                ActivityLogService::log(
+                    'Created',
+                    'VolunteerApplication',
+                    "تم إضافة طلب التطوع.",
+                    $application->getOriginal(),
+                    $application->getChanges()
+                );
             }
 
             DB::commit();

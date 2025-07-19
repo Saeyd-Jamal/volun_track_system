@@ -54,21 +54,20 @@ class User extends Authenticatable
         ];
     }
 
-    public function roles() :HasMany
-    {
-        return $this->hasMany(RoleUser::class,'user_id','id');
-    }
-
-
     // Accessor
     public function getAvatarUrlAttribute() // $user->avatar-url
     {
-        if($this->avatar) {
+        if ($this->avatar) {
             return asset('storage/' . $this->avatar);
         }
         return asset('imgs/user.jpg');
     }
 
+    // Relationship
+    public function roles(): HasMany
+    {
+        return $this->hasMany(RoleUser::class, 'user_id', 'id');
+    }
     public function specialization()
     {
         return $this->belongsTo(Specialization::class);
@@ -82,10 +81,5 @@ class User extends Authenticatable
     public function volunteerApplications()
     {
         return $this->hasMany(VolunteerApplication::class, 'rejected_by');
-    }
-
-    public function approvedTrackings()
-    {
-        return $this->hasMany(ApprovalTracking::class, 'approved_by');
     }
 }

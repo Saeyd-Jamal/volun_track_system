@@ -1,56 +1,59 @@
 <x-dashboard-layout>
-    <h2 class="mb-4">إدارة الثوابت</h2>
+    <h2 class="mb-6 text-xl font-semibold">إدارة الثوابت</h2>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    <form action="{{ route('dashboard.constants.update') }}" method="POST">
+    <form action="{{ route('dashboard.constants.update') }}" method="POST" class="space-y-8">
         @csrf
 
-        {{-- المدن --}}
-        <div class="mb-4">
-            <label class="form-label">المدن:</label>
-            <div id="cities-wrapper">
-                @foreach($constants['cities']->value ?? [''] as $city)
-                    <div class="input-group mb-2">
-                        <input type="text" name="cities[]" value="{{ $city }}" class="form-control">
-                        <button type="button" class="btn btn-danger" onclick="removeField(this)">❌</button>
+        {{-- مكون إعادة استخدام --}}
+        @php
+            $sections = [
+                ['label' => 'المدن', 'name' => 'cities', 'items' => $constants['cities']->value ?? ['']],
+                ['label' => 'الجامعات', 'name' => 'universities', 'items' => $constants['universities']->value ?? ['']],
+                [
+                    'label' => 'أماكن التطوع',
+                    'name' => 'volunteering_places',
+                    'items' => $constants['volunteering_places']->value ?? [''],
+                ],
+            ];
+        @endphp
+
+        @foreach ($sections as $section)
+            <div class="mb-4 shadow-sm card">
+                <div class="card-body">
+                    <div class="mb-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ $section['label'] }}</h5>
+                        <button type="button"
+                            onclick="addField('{{ $section['name'] }}-wrapper', '{{ $section['name'] }}[]')"
+                            class="btn btn-outline-primary btn-sm">
+                            <i class="ti ti-plus"></i> إضافة {{ $section['label'] }}
+                        </button>
                     </div>
-                @endforeach
+
+                    <hr>
+
+                    <div id="{{ $section['name'] }}-wrapper" class="row g-3">
+                        @foreach ($section['items'] as $item)
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="input-group">
+                                    <input type="text" name="{{ $section['name'] }}[]" value="{{ $item }}"
+                                        class="form-control" placeholder="{{ $section['label'] }}...">
+                                    <button type="button" class="btn btn-danger" onclick="removeField(this)">
+                                        <i class="ti ti-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
-            <button type="button" onclick="addField('cities-wrapper', 'cities[]')" class="btn btn-sm btn-secondary">إضافة مدينة</button>
+        @endforeach
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-success">
+                <i class="ti ti-save"></i> حفظ التعديلات
+            </button>
         </div>
 
-        {{-- الجامعات --}}
-        <div class="mb-4">
-            <label class="form-label">الجامعات:</label>
-            <div id="universities-wrapper">
-                @foreach($constants['universities']->value ?? [''] as $uni)
-                    <div class="input-group mb-2">
-                        <input type="text" name="universities[]" value="{{ $uni }}" class="form-control">
-                        <button type="button" class="btn btn-danger" onclick="removeField(this)">❌</button>
-                    </div>
-                @endforeach
-            </div>
-            <button type="button" onclick="addField('universities-wrapper', 'universities[]')" class="btn btn-sm btn-secondary">إضافة جامعة</button>
-        </div>
-
-        {{-- أماكن التطوع --}}
-        <div class="mb-4">
-            <label class="form-label">أماكن التطوع:</label>
-            <div id="volunteering-wrapper">
-                @foreach($constants['volunteering_places']->value ?? [''] as $place)
-                    <div class="input-group mb-2">
-                        <input type="text" name="volunteering_places[]" value="{{ $place }}" class="form-control">
-                        <button type="button" class="btn btn-danger" onclick="removeField(this)">❌</button>
-                    </div>
-                @endforeach
-            </div>
-            <button type="button" onclick="addField('volunteering-wrapper', 'volunteering_places[]')" class="btn btn-sm btn-secondary">إضافة مكان</button>
-        </div>
-
-        <button type="submit" class="btn btn-primary">حفظ</button>
     </form>
 
     {{-- JavaScript --}}
@@ -58,16 +61,22 @@
         function addField(wrapperId, name) {
             const wrapper = document.getElementById(wrapperId);
             const div = document.createElement('div');
-            div.className = 'input-group mb-2';
+            div.className = 'col-12 col-md-6 col-lg-4';
             div.innerHTML = `
-                <input type="text" name="${name}" class="form-control">
-                <button type="button" class="btn btn-danger" onclick="removeField(this)">❌</button>
+                <div class="input-group">
+                    <input type="text" name="${name}" class="form-control" placeholder="...">
+                    <button type="button" class="btn btn-danger" onclick="removeField(this)">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </div>
             `;
             wrapper.appendChild(div);
         }
 
         function removeField(button) {
-            button.closest('.input-group').remove();
+            button.closest('.col-12').remove();
         }
     </script>
+
+
 </x-dashboard-layout>

@@ -35,7 +35,7 @@
         <!-- Login -->
         <div class="p-6 d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12">
             <div class="pt-5 mx-auto mt-12 w-px-400">
-                <h4 class="mb-1">مرحبا بك مع TechNova 👋</h4>
+                <h4 class="mb-1">مرحبا بك 👋</h4>
                 <p class="mb-6">الرجاء تسجيل الدخول لبداية العمل </p>
 
                 <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">

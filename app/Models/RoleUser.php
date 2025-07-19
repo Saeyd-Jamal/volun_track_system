@@ -14,10 +14,14 @@ class RoleUser extends Model
 
     public $timestamps = false;
     protected $fillable = [
-        'role_name','user_id','ability'
+        'role_name',
+        'user_id',
+        'ability'
     ];
 
-    public function user(){
+    // Relationship
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

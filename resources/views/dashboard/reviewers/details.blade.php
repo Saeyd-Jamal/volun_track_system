@@ -127,19 +127,23 @@
 
     <div class="mb-3">
         <label class="form-label">سبب الرفض (إذا تم رفض الطلب)</label>
-        <textarea class="form-control" id="reason" rows="2" @if ($app->status == 'pending') readonly @endif>{{ $app->rejection_reason }}</textarea>
+        <textarea class="form-control" id="reason" rows="2" @if ($app->status == 'approved' || $app->status == 'rejected') readonly @endif>{{ $app->rejection_reason }}</textarea>
     </div>
 
 </div>
 <div class="modal-footer" id="modalFooter">
-    @if ($app->status == 'pending')
+    @if ($app->status == 'pending' && Auth::user()->role == 'reviewer')
         <button type="button" id="rejectButton" onclick="decisionSubmit('reject', {{ $app->id }})" data-id="{{ $app->id }}" class="btn btn-label-secondary"
             data-bs-dismiss="modal">
             رفض
         </button>
         <button type="button" id="approveButton" onclick="decisionSubmit('approve', {{ $app->id }})" data-id="{{ $app->id }}"
             class="btn btn-primary">موافقة</button>
-    @else
+    @elseif ($app->status == 'approved')
         <span class="badge bg-label-success me-1">تم الموافقة عليها</span>
+    @elseif ($app->status == 'rejected')
+        <span class="badge bg-label-danger me-1">تم رفضها</span>
+    @elseif ($app->status == 'pending')
+        <span class="badge bg-label-warning me-1">قيد الانتظار</span>
     @endif
 </div>

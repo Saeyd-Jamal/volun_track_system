@@ -5,21 +5,22 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\FormSetting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogService;
 
 class FormSettingController extends Controller
 {
     public function edit()
     {
-        $setting =FormSetting::first(); 
+        $setting = FormSetting::first();
 
-       
-    if (!$setting) {
-        $setting = FormSetting::create([
-            'form_status' => 'open',
-            'form_open_at' => now(),
-            'form_close_at' => now()->addDays(30),
-        ]);
-    }
+
+        if (!$setting) {
+            $setting = FormSetting::create([
+                'form_status' => 'open',
+                'form_open_at' => now(),
+                'form_close_at' => now()->addDays(30),
+            ]);
+        }
 
         return view('dashboard.form_settings', compact('setting'));
     }
@@ -34,6 +35,15 @@ class FormSettingController extends Controller
 
         $setting = FormSetting::first();
         $setting->update($request->only(['form_status', 'form_open_at', 'form_close_at']));
+
+        // تسجيل الحدث
+        ActivityLogService::log(
+            'Updated',
+            'FormSetting',
+            "تم تعديل إعدادات النموذج.",
+            $setting->getOriginal(),
+            $setting->getChanges()
+        );
 
         return redirect()->back()->with('success', 'تم تحديث إعدادات النموذج بنجاح');
     }
